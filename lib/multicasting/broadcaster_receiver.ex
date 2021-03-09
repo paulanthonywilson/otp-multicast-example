@@ -9,17 +9,12 @@ defmodule Multicasting.BroadcasterReceiver do
   require Logger
 
   @port (case Mix.env() do
-           :test ->
-             49_998
-
-           _ ->
-             49_999
+           :test -> 49_002
+           _ -> 49_001
          end)
 
   @active 1
-
-  @multicast_group_ip {224, 2, 3, 4}
-
+  @multicast_group_ip {239, 2, 3, 4}
   @udp_options [
     :binary,
     active: @active,
@@ -28,7 +23,7 @@ defmodule Multicasting.BroadcasterReceiver do
     multicast_ttl: 1
   ]
 
-  @broadcast_interval 5_000
+  @broadcast_interval 15_000
   @message_prefix "multitastic"
 
   @name __MODULE__
