@@ -45,6 +45,7 @@ defmodule Multicasting.BroadcasterReceiver do
   end
 
   def handle_info({:udp, _port, ip, _port_number, @message_prefix <> hostname}, state) do
+    Multicasting.Tick.tick(:broadcaster_receiver_tick)
     Logger.info("Broadcast received from #{hostname} on #{format_ip(ip)}")
     {:noreply, state}
   end

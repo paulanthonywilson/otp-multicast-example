@@ -1,6 +1,4 @@
 defmodule Multicasting.Application do
-  # See https://hexdocs.pm/elixir/Application.html
-  # for more information on OTP Applications
   @moduledoc false
 
   use Application
@@ -8,7 +6,7 @@ defmodule Multicasting.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      Multicasting.BroadcasterReceiver
+      Multicasting.BroadcasterReceiverSupervisor
     ]
 
     opts = [strategy: :one_for_one, name: Multicasting.Supervisor]
