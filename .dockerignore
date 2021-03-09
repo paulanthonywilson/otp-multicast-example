@@ -1,0 +1,7 @@
+.git
+_build
+*.dump
+bin
+deps
+.elixir_ls
+.idea
