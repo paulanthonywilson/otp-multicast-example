@@ -28,6 +28,7 @@ defmodule Multicasting.BroadcasterReceiver do
 
   @name __MODULE__
 
+  @spec start_link(any) :: :ignore | {:error, any} | {:ok, pid}
   def start_link(_) do
     GenServer.start_link(__MODULE__, {}, name: @name)
   end

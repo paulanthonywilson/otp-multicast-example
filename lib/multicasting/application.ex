@@ -6,7 +6,8 @@ defmodule Multicasting.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      Multicasting.BroadcasterReceiverSupervisor
+      Multicasting.BroadcasterReceiverSupervisor,
+      {DynamicSupervisor, strategy: :one_for_one, name: Multicasting.DynamicSupervisor}
     ]
 
     opts = [strategy: :one_for_one, name: Multicasting.Supervisor]

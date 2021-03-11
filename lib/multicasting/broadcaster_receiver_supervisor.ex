@@ -6,7 +6,7 @@ defmodule Multicasting.BroadcasterReceiverSupervisor do
     Supervisor.start_link(__MODULE__, arg, name: __MODULE__)
   end
 
-  def init(arg) do
+  def init(_arg) do
     children = [
       {Multicasting.Tick, [timeout: 35_000, name: :broadcaster_receiver_tick]},
       Multicasting.BroadcasterReceiver
