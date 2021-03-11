@@ -28,3 +28,4 @@ multicasting-*.tar
 
 # Temporary files for e.g. tests
 /tmp
+*.iml
