@@ -6,6 +6,8 @@ defmodule Multicasting.BroadcasterReceiver do
 
   use GenServer
 
+  alias Multicasting.ExpiringRegistry
+
   require Logger
 
   @port (case Mix.env() do
@@ -24,7 +26,7 @@ defmodule Multicasting.BroadcasterReceiver do
   ]
 
   @broadcast_interval 15_000
-  @message_prefix "multitastic"
+  @message_prefix "multitastic:"
 
   @name __MODULE__
 
@@ -41,13 +43,20 @@ defmodule Multicasting.BroadcasterReceiver do
 
   def handle_info(:broadcast, %{socket: socket} = state) do
     Process.send_after(self(), :broadcast, @broadcast_interval)
-    :ok = :gen_udp.send(socket, @multicast_group_ip, @port, "#{@message_prefix}#{hostname()}")
+
+    :ok =
+      :gen_udp.send(socket, @multicast_group_ip, @port, "#{@message_prefix}#{this_hostname()}")
+
     {:noreply, state}
   end
 
   def handle_info({:udp, _port, ip, _port_number, @message_prefix <> hostname}, state) do
     Multicasting.Tick.tick(:broadcaster_receiver_tick)
-    Logger.info("Broadcast received from #{hostname} on #{format_ip(ip)}")
+
+    if hostname != this_hostname() do
+      ExpiringRegistry.register(:multicast_host_registry, hostname, ip)
+    end
+
     {:noreply, state}
   end
 
@@ -61,14 +70,8 @@ defmodule Multicasting.BroadcasterReceiver do
     {:noreply, state}
   end
 
-  defp hostname do
+  defp this_hostname do
     {:ok, name} = :inet.gethostname()
     List.to_string(name)
-  end
-
-  defp format_ip(ip_tuple) do
-    ip_tuple
-    |> Tuple.to_list()
-    |> Enum.join(".")
   end
 end
