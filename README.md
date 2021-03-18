@@ -33,3 +33,12 @@ or
 ```shell
 docker build -t multicast . && docker run -it multicast iex -S mix
 ```
+
+When running multiple nodes you can then see the peer details received by running
+
+```elixir
+iex(1)> Multicasting.registered_peers()
+[{"c5d10bc2f914", {172, 17, 0, 3}}]
+```
+
+You may need to wait to see results: the nodes broadcast every 15 seconds, and the entries will expire after 35 seconds, if not refreshed.
